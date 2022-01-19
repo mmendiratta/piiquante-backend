@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -30,6 +31,7 @@ app.use("", (req, res, next) => {
   next();
 });
 
+app.use(bodyParser.json());
 app.use("/api/sauces", sauceRoutes);
 
 module.exports = app;
