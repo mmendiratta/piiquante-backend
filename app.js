@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const sauceRoutes = require("./routes/SauceRoutes");
+
 const app = express();
 mongoose
   .connect(
@@ -28,8 +30,6 @@ app.use("", (req, res, next) => {
   next();
 });
 
-app.use((req, res) => {
-  res.json({ message: "Your request was successful" });
-});
+app.use("/api/sauces", sauceRoutes);
 
 module.exports = app;
