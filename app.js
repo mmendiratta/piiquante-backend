@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const sauceRoutes = require("./routes/SauceRoutes");
+const userRoutes = require("./routes/UserRoutes");
 
 const app = express();
 mongoose
@@ -33,5 +34,6 @@ app.use("", (req, res, next) => {
 
 app.use(bodyParser.json());
 app.use("/api/sauces", sauceRoutes);
+app.use("/api/auth", userRoutes);
 
 module.exports = app;
