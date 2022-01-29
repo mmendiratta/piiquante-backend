@@ -6,7 +6,6 @@ const sauceModelSchema = mongoose.Schema({
   manufacturer: { type: String, require: true },
   description: { type: String, require: true },
   mainPepper: { type: String, require: true },
-  imageUrl: { type: String, require: true },
   heat: { type: Number, require: true },
   likes: { type: Number, require: true },
   dislikes: { type: Number, require: true },
@@ -19,16 +18,25 @@ module.exports = mongoose.model("Sauce", sauceModelSchema);
 /*
 example
 {
-	"userId": "123",
-	"name": "hot 1",
-	"manufacturer": "open classrooms",
-	"description": "hot sauce by open classrooms",
-	"mainPepper": "ghost",
-	"imageUrl": "abc123.com",
-	"heat": 3,
-	"likes": 5,
-	"dislikes": 1,
-	"usersLiked": ["123", "456", "789", "101", "112"],
-	"usersDisliked": ["132"]
+	"sauce": {
+		"name": "hot 1",
+		"manufacturer": "open classrooms",
+		"description": "hot sauce by open classrooms",
+		"mainPepper": "ghost",
+		"imageUrl": "abc123.com",
+		"heat": 3,
+		"likes": 5,
+		"dislikes": 1,
+		"usersLiked": [
+			"123",
+			"456",
+			"789",
+			"101",
+			"112"
+		],
+		"usersDisliked": [
+			"132"
+		]
+	}
 }
 */

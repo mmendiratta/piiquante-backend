@@ -25,20 +25,24 @@ exports.getOneSauce = (req, res) => {
 };
 
 exports.createSauce = (req, res) => {
-  req.body.sauce = JSON.stringify(req.body.sauce);
+  console.log(req);
+  return res.status(200).json({ message: "dummy sauce" });
+  //     // console.log(JSON.parse(req.body));
+  //   const sauceString = JSON.parse(req.body);
+  // const sauceString = JSON.parse(req.body.sauce);
+  // console.log(sauceString.name);
   const sauce = new Sauce({
-    // create unique id
-    name: req.body.sauce,
-    manufacturer: "",
-    description: "",
-    mainPepper: "",
-    // TODO: update image url
-    imageUrl: "",
-    heat: 0,
-    likes: 0,
-    dislikes: 0,
-    usersLiked: [],
-    usersDisliked: [],
+    // name: req.body.sauce.name,
+    // manufacturer: req.body.sauce.manufacturer,
+    // description: req.body.sauce.description,
+    // mainPepper: req.body.sauce.mainPepper,
+    // // TODO: update image url
+    // imageUrl: "",
+    // heat: req.body.sauce.heat,
+    // likes: 0,
+    // dislikes: 0,
+    // usersLiked: [],
+    // usersDisliked: [],
   });
 
   sauce
@@ -51,16 +55,7 @@ exports.createSauce = (req, res) => {
     });
 };
 
-exports.setSauceLike = (req, res) => {
-  res.status(201).json("successful creation of sauce like");
-};
-
-exports.updateSauce = (req, res) => {
-  res.status(204).json("successful update of sauce");
-};
-
 exports.deleteSauce = (req, res) => {
-  console.log(req.params.id);
   Sauce.findOne({ _id: req.params.id }).then(() => {
     Sauce.deleteOne({ _id: req.params.id })
       .then(() => {
@@ -75,3 +70,15 @@ exports.deleteSauce = (req, res) => {
       });
   });
 };
+
+exports.setSauceLike = (req, res) => {
+  console.log(req);
+  res.status(201).json("successful creation of sauce like");
+};
+
+exports.updateSauce = (_req, res) => {
+  res.status(204).json("successful update of sauce");
+};
+
+// Watch for console errors
+// Watch for 403s or errors not causing visual errors
