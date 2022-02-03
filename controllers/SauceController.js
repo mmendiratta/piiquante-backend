@@ -25,24 +25,18 @@ exports.getOneSauce = (req, res) => {
 };
 
 exports.createSauce = (req, res) => {
-  console.log(req);
-  return res.status(200).json({ message: "dummy sauce" });
-  //     // console.log(JSON.parse(req.body));
-  //   const sauceString = JSON.parse(req.body);
-  // const sauceString = JSON.parse(req.body.sauce);
-  // console.log(sauceString.name);
+  const sauceString = JSON.parse(req.body.sauce);
   const sauce = new Sauce({
-    // name: req.body.sauce.name,
-    // manufacturer: req.body.sauce.manufacturer,
-    // description: req.body.sauce.description,
-    // mainPepper: req.body.sauce.mainPepper,
-    // // TODO: update image url
-    // imageUrl: "",
-    // heat: req.body.sauce.heat,
-    // likes: 0,
-    // dislikes: 0,
-    // usersLiked: [],
-    // usersDisliked: [],
+    name: sauceString.name,
+    manufacturer: sauceString.manufacturer,
+    description: sauceString.description,
+    mainPepper: sauceString.mainPepper,
+    imageUrl: "../" + req.file.path,
+    heat: sauceString.heat,
+    likes: 0,
+    dislikes: 0,
+    usersLiked: [],
+    usersDisliked: [],
   });
 
   sauce
@@ -72,13 +66,94 @@ exports.deleteSauce = (req, res) => {
 };
 
 exports.setSauceLike = (req, res) => {
-  console.log(req);
-  res.status(201).json("successful creation of sauce like");
+  const likeStatus = req.body.like;
+  Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+    if (likeStatus == 1) {
+      const newList = sauce.usersLiked;
+      newList.push(req.body.userId);
+      const likeTotal = sauce.likes + 1;
+      Sauce.updateOne(
+        { _id: req.params.id },
+        {
+          likes: likeTotal,
+          usersLiked: newList,
+        }
+      )
+        .then(() => {
+          res.status(201).json("Sauce like updated!");
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
+    } else if (likeStatus == -1) {
+      const newList = sauce.usersDisliked;
+      newList.push(req.body.userId);
+      const disLikeTotal = sauce.dislikes + 1;
+      Sauce.updateOne(
+        { _id: req.params.id },
+        {
+          dislikes: disLikeTotal,
+          usersDisliked: newList,
+        }
+      )
+        .then(() => {
+          res.status(201).json("Sauce dislike updated!");
+        })
+        .catch((error) => {
+          res.status(400).json({
+            error: error,
+          });
+        });
+    } else {
+      if (sauce.usersLiked.includes(req.body.userId)) {
+        const newList = sauce.usersLiked;
+        const filteredList = newList.filter((item) => {
+          return item !== req.body.userId;
+        });
+        const likeTotal = sauce.likes - 1;
+        Sauce.updateOne(
+          { _id: req.params.id },
+          {
+            likes: likeTotal,
+            usersLiked: filteredList,
+          }
+        )
+          .then(() => {
+            res.status(201).json("Sauce like removed!");
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            });
+          });
+      } else {
+        const newList = sauce.usersDisliked;
+        const filteredList = newList.filter((item) => {
+          return item !== req.body.userId;
+        });
+        const disLikeTotal = sauce.dislikes - 1;
+        Sauce.updateOne(
+          { _id: req.params.id },
+          {
+            dislikes: disLikeTotal,
+            usersDisliked: filteredList,
+          }
+        )
+          .then(() => {
+            res.status(201).json("Sauce dislike removed!");
+          })
+          .catch((error) => {
+            res.status(400).json({
+              error: error,
+            });
+          });
+      }
+    }
+  });
 };
 
 exports.updateSauce = (_req, res) => {
   res.status(204).json("successful update of sauce");
 };
-
-// Watch for console errors
-// Watch for 403s or errors not causing visual errors
