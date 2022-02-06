@@ -4,26 +4,25 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 exports.signupUser = (req, res) => {
-  console.log(req);
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(403).json({ message: "Account already exists" });
-    }
-  });
-
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const user = new User({
-      email: req.body.email,
-      password: hash,
-    });
-    user
-      .save()
-      .then(() => {
-        res.status(201).json({ message: "New account created!" });
-      })
-      .catch((error) => {
-        res.status(500).json({ error: error });
+    } else {
+      bcrypt.hash(req.body.password, 10).then((hash) => {
+        const user = new User({
+          email: req.body.email,
+          password: hash,
+        });
+        user
+          .save()
+          .then(() => {
+            res.status(201).json({ message: "New account created!" });
+          })
+          .catch((error) => {
+            res.status(500).json({ error: error });
+          });
       });
+    }
   });
 };
 
@@ -31,19 +30,14 @@ exports.loginUser = (req, res) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({
-          error: new Error("User not found"),
-        });
+        return res.status(401).json({ message: "Account not found" });
       }
 
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
-          console.log(valid);
           if (!valid) {
-            return res.status(401).json({
-              error: new Error("Incorrect Password"),
-            });
+            return res.status(401).json({ message: "Incorrect Password" });
           }
 
           const token = jwt.sign(

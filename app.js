@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const sauceRoutes = require("./routes/SauceRoutes");
 const userRoutes = require("./routes/UserRoutes");
+const path = require("path");
 
 const app = express();
 mongoose
@@ -19,7 +20,7 @@ mongoose
     console.error(error);
   });
 
-app.use("", (req, res, next) => {
+app.use("", (_req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -35,5 +36,6 @@ app.use("", (req, res, next) => {
 app.use(bodyParser.json());
 app.use("/api/sauces", sauceRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 module.exports = app;

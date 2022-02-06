@@ -26,12 +26,13 @@ exports.getOneSauce = (req, res) => {
 
 exports.createSauce = (req, res) => {
   const sauceString = JSON.parse(req.body.sauce);
+  const url = req.protocol + "://" + req.get("host");
   const sauce = new Sauce({
     name: sauceString.name,
     manufacturer: sauceString.manufacturer,
     description: sauceString.description,
     mainPepper: sauceString.mainPepper,
-    imageUrl: "../" + req.file.path,
+    imageUrl: url + "/images/" + req.file.filename,
     heat: sauceString.heat,
     likes: 0,
     dislikes: 0,
@@ -154,6 +155,44 @@ exports.setSauceLike = (req, res) => {
   });
 };
 
-exports.updateSauce = (_req, res) => {
-  res.status(204).json("successful update of sauce");
+exports.updateSauce = (req, res) => {
+  let updatedSauce = new Sauce({ _id: req.params.id });
+  if (req.file) {
+    const url = req.protocol + "://" + req.get("host");
+    const sauceString = JSON.parse(req.body.sauce);
+    updatedSauce = {
+      _id: req.params.id,
+      name: sauceString.name,
+      manufacturer: sauceString.manufacturer,
+      description: sauceString.description,
+      mainPepper: sauceString.mainPepper,
+      imageUrl: url + "/images/" + req.file.filename,
+      heat: sauceString.heat,
+      likes: sauceString.likes,
+      dislikes: sauceString.dislikes,
+      usersLiked: sauceString.usersLiked,
+      usersDisliked: sauceString.usersDisliked,
+    };
+  } else {
+    updatedSauce = {
+      _id: req.params.id,
+      name: req.body.name,
+      manufacturer: req.body.manufacturer,
+      description: req.body.description,
+      mainPepper: req.body.mainPepper,
+      imageUrl: req.body.imageUrl,
+      heat: req.body.heat,
+      likes: req.body.likes,
+      dislikes: req.body.dislikes,
+      usersLiked: req.body.usersLiked,
+      usersDisliked: sauceString.usersDisliked,
+    };
+  }
+  Sauce.updateOne({ _id: req.params.id }, updatedSauce)
+    .then(() => {
+      res.status(204).json({ message: "Updated Sauce!" });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
 };
