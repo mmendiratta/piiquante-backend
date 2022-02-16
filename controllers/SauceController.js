@@ -28,6 +28,7 @@ exports.createSauce = (req, res) => {
   const sauceString = JSON.parse(req.body.sauce);
   const url = req.protocol + "://" + req.get("host");
   const sauce = new Sauce({
+    userId: sauceString.userId,
     name: sauceString.name,
     manufacturer: sauceString.manufacturer,
     description: sauceString.description,
@@ -162,6 +163,7 @@ exports.updateSauce = (req, res) => {
     const sauceString = JSON.parse(req.body.sauce);
     updatedSauce = {
       _id: req.params.id,
+      userId: sauceString.userId,
       name: sauceString.name,
       manufacturer: sauceString.manufacturer,
       description: sauceString.description,
@@ -176,6 +178,7 @@ exports.updateSauce = (req, res) => {
   } else {
     updatedSauce = {
       _id: req.params.id,
+      userId: req.body.userId,
       name: req.body.name,
       manufacturer: req.body.manufacturer,
       description: req.body.description,
@@ -185,12 +188,12 @@ exports.updateSauce = (req, res) => {
       likes: req.body.likes,
       dislikes: req.body.dislikes,
       usersLiked: req.body.usersLiked,
-      usersDisliked: sauceString.usersDisliked,
+      usersDisliked: req.body.usersDisliked,
     };
   }
   Sauce.updateOne({ _id: req.params.id }, updatedSauce)
     .then(() => {
-      res.status(204).json({ message: "Updated Sauce!" });
+      res.status(200).json({ message: "Updated Sauce!" });
     })
     .catch((error) => {
       res.status(400).json({ error: error });

@@ -37,7 +37,7 @@ exports.loginUser = (req, res) => {
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
-            return res.status(401).json({ message: "Incorrect Password" });
+            return res.status(403).json({ message: "Incorrect Password" });
           }
 
           const token = jwt.sign(
